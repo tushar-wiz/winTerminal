@@ -40,23 +40,33 @@ std::string changePath(std::string q, std::string path){
     q = q.substr(5);
     if(q[0] == '+'){
         q = q.substr(1);
+        for(int i=0;i<q.length();i++){
+            if(q[i] == '/'){
+                std::cout << "Use front slash \\" << '\n';
+                return normalPath;
+            }
+        }
         path += "\\";
         path += q;
-        if(fileExists(path)){
+        if(fileExists(path))
             return path;
-        }
         else{
             std::cout << "Path Doesnt Exist" << '\n';
             return normalPath;
         }
     }
     else if(q[0] == '-'){
-        q = q.substr(1);
-        int slashCount = 1;
-        for(int i=0;i<q.length();i++) (q[i]=='\\')?slashCount++:NULL;
-
+        for(int i=0;i<path.length();i++){
+            if(path[i] == '\\'){
+                path.erase(i);
+            }
+        }
+        return path;
     }
-
+    else
+        return (fileExists(q))?q:normalPath;
+    
+    return normalPath;
 }
 
 int main(){
