@@ -4,8 +4,7 @@
 #include <string>
 
 void show(std::string path){
-    std::string add = "\\*.";
-    path.append(add);
+    path += "\\*.*";
     WIN32_FIND_DATAA ffd;
     HANDLE hfind;
     LPCSTR ph = path.c_str();
@@ -27,18 +26,46 @@ bool match(std::string q,std::string p){
     return true;
 }
 
+bool fileExists(std::string path){
+    WIN32_FIND_DATAA ffd;
+    LPCSTR ph = path.c_str();
+    if(FindFirstFileA(ph,&ffd) == INVALID_HANDLE_VALUE){
+        return false;
+    }
+    return true;
+}
+
 std::string changePath(std::string q, std::string path){
-    
+    std::string normalPath = path;
+    q = q.substr(5);
+    if(q[0] == '+'){
+        q = q.substr(1);
+        path += "\\";
+        path += q;
+        if(fileExists(path)){
+            return path;
+        }
+        else{
+            std::cout << "Path Doesnt Exist" << '\n';
+            return normalPath;
+        }
+    }
+    else if(q[0] == '-'){
+        q = q.substr(1);
+        int slashCount = 1;
+        for(int i=0;i<q.length();i++) (q[i]=='\\')?slashCount++:NULL;
+
+    }
+
 }
 
 int main(){
-    std::string path = "C:\\Users\\tusha";
+    std::string path = "C:";
     std::string query;
     while(true){
         std::cout << path << "> ";
-        std::cin >> query;
+        getline(std::cin,query);
         std::cout << '\n';
-
         if(match(query,"exit"))
             break;
         else if(match(query,"show"))
